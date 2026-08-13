@@ -1,26 +1,40 @@
 {
   "name": "open-bike-computer",
+  "version": "0.2.0",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "prebuild": "expo prebuild",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "export:android": "expo export --platform android --output-dir dist/android",
+    "export:ios": "expo export --platform ios --output-dir dist/ios"
   },
   "dependencies": {
-    "lucide-react": "^1.31.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@sfourdrinier/react-native-ble-plx": "^3.9.3",
+    "base64-js": "^1.5.1",
+    "expo": "~57.0.12",
+    "expo-dev-client": "~57.0.11",
+    "expo-file-system": "~57.0.2",
+    "expo-keep-awake": "~57.0.1",
+    "expo-location": "~57.0.9",
+    "expo-sharing": "~57.0.11",
+    "expo-status-bar": "~57.0.1",
+    "expo-task-manager": "~57.0.9",
+    "lucide-react-native": "^1.31.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.2",
+    "react-native-svg": "15.15.4"
   },
   "devDependencies": {
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.0.5",
-    "typescript": "^7.0.2",
-    "vite": "^8.2.1",
+    "@types/react": "~19.2.0",
+    "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   }
 }

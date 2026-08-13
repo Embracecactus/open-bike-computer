@@ -1,52 +1,21 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import type { RideRecord } from '../types'
 
-const DATABASE_NAME = 'open-bike-computer'
-const STORE_NAME = 'rides'
-const DATABASE_VERSION = 1
-
-function openDatabase(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION)
-    request.onerror = () => reject(request.error)
-    request.onsuccess = () => resolve(request.result)
-    request.onupgradeneeded = () => {
-      const database = request.result
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        database.createObjectStore(STORE_NAME, { keyPath: 'id' })
-      }
-    }
-  })
-}
+const RIDES_KEY = '@open-bike-computer/rides/v1'
 
 export async function saveRide(ride: RideRecord): Promise<void> {
-  const database = await openDatabase()
-  await new Promise<void>((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, 'readwrite')
-    transaction.objectStore(STORE_NAME).put(ride)
-    transaction.oncomplete = () => resolve()
-    transaction.onerror = () => reject(transaction.error)
-  })
-  database.close()
+  const rides = await listRides()
+  const next = [ride, ...rides.filter((item) => item.id !== ride.id)]
+  await AsyncStorage.setItem(RIDES_KEY, JSON.stringify(next))
 }
 
 export async function listRides(): Promise<RideRecord[]> {
-  const database = await openDatabase()
-  const rides = await new Promise<RideRecord[]>((resolve, reject) => {
-    const request = database.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).getAll()
-    request.onsuccess = () => resolve(request.result as RideRecord[])
-    request.onerror = () => reject(request.error)
-  })
-  database.close()
-  return rides.sort((a, b) => b.startedAt - a.startedAt)
+  const value = await AsyncStorage.getItem(RIDES_KEY)
+  if (!value) return []
+  return (JSON.parse(value) as RideRecord[]).sort((a, b) => b.startedAt - a.startedAt)
 }
 
 export async function deleteRide(id: string): Promise<void> {
-  const database = await openDatabase()
-  await new Promise<void>((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, 'readwrite')
-    transaction.objectStore(STORE_NAME).delete(id)
-    transaction.oncomplete = () => resolve()
-    transaction.onerror = () => reject(transaction.error)
-  })
-  database.close()
+  const rides = await listRides()
+  await AsyncStorage.setItem(RIDES_KEY, JSON.stringify(rides.filter((ride) => ride.id !== id)))
 }

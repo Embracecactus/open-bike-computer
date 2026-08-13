@@ -17,12 +17,23 @@ export function haversineDistance(a: TrackPoint, b: TrackPoint): number {
   return 2 * EARTH_RADIUS_M * Math.asin(Math.sqrt(chord))
 }
 
-export function positionToTrackPoint(position: GeolocationPosition): TrackPoint {
+interface NativeLocation {
+  coords: {
+    latitude: number
+    longitude: number
+    altitude: number | null
+    accuracy: number | null
+    speed: number | null
+  }
+  timestamp: number
+}
+
+export function locationToTrackPoint(position: NativeLocation): TrackPoint {
   return {
     latitude: position.coords.latitude,
     longitude: position.coords.longitude,
     altitude: position.coords.altitude,
-    accuracy: position.coords.accuracy,
+    accuracy: position.coords.accuracy ?? 100,
     speed: position.coords.speed,
     timestamp: position.timestamp,
   }

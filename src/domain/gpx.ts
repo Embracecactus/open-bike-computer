@@ -1,4 +1,6 @@
 import type { RideRecord } from '../types'
+import { File, Paths } from 'expo-file-system'
+import * as Sharing from 'expo-sharing'
 
 export function rideToGpx(ride: RideRecord): string {
   const points = ride.points
@@ -17,12 +19,17 @@ ${points}
 </gpx>`
 }
 
-export function downloadRideGpx(ride: RideRecord): void {
-  const blob = new Blob([rideToGpx(ride)], { type: 'application/gpx+xml' })
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  anchor.href = url
-  anchor.download = `ride-${new Date(ride.startedAt).toISOString().replaceAll(':', '-')}.gpx`
-  anchor.click()
-  URL.revokeObjectURL(url)
+export async function shareRideGpx(ride: RideRecord): Promise<void> {
+  const filename = `ride-${new Date(ride.startedAt).toISOString().replaceAll(':', '-')}.gpx`
+  const file = new File(Paths.cache, filename)
+  file.create({ overwrite: true })
+  file.write(rideToGpx(ride))
+
+  if (await Sharing.isAvailableAsync()) {
+    await Sharing.shareAsync(file.uri, {
+      mimeType: 'application/gpx+xml',
+      dialogTitle: '导出骑行 GPX',
+      UTI: 'com.topografix.gpx',
+    })
+  }
 }
