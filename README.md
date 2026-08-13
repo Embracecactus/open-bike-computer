@@ -68,7 +68,7 @@ npm run export:ios
 
 CI 会在 Linux 上验证测试、类型检查和 Android/iOS JavaScript Bundle。完整 Android 原生构建需要 Android SDK；完整 iOS 编译和签名必须在 macOS/Xcode 或 EAS Build 中完成。
 
-## EAS 云构建（可选）
+## EAS 云构建
 
 首次使用时先登录并绑定你自己的 Expo 项目：
 
@@ -77,13 +77,26 @@ npx eas-cli login
 npx eas-cli init
 ```
 
-之后可以构建双端内部测试包：
+Android 内测构建会输出可直接安装的 APK：
 
 ```bash
-npx eas-cli build --profile preview --platform all
+npx eas-cli build --profile preview --platform android
 ```
 
-`eas.json` 已提供 development、preview 和 production 三种配置，但仓库不会提交任何个人 Expo 项目 ID、签名证书或商店凭据。
+iOS 真机内测需要 Apple Developer 账号、签名凭据以及已登记的测试设备：
+
+```bash
+npx eas-cli device:create
+npx eas-cli build --profile preview --platform ios
+```
+
+若只需要在 macOS 的 iOS Simulator 中验证，可以使用无需苹果签名的模拟器构建：
+
+```bash
+npx eas-cli build --profile simulator --platform ios
+```
+
+`eas.json` 提供 development、preview、simulator 和 production 四种配置。仓库不会提交签名证书或商店凭据。
 
 ## 平台权限说明
 

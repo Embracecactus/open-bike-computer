@@ -4,7 +4,10 @@
     "slug": "open-bike-computer",
     "version": "0.2.0",
     "orientation": "portrait",
-    "platforms": ["android", "ios"],
+    "platforms": [
+      "android",
+      "ios"
+    ],
     "scheme": "openbikecomputer",
     "ios": {
       "supportsTablet": false,
@@ -15,7 +18,11 @@
         "NSLocationAlwaysUsageDescription": "用于锁屏或切换应用后继续记录骑行轨迹。",
         "NSMotionUsageDescription": "用于识别骑行状态并改善轨迹记录精度。",
         "NSBluetoothAlwaysUsageDescription": "用于连接心率带、速度计和踏频传感器。",
-        "UIBackgroundModes": ["location", "bluetooth-central"]
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": [
+          "location",
+          "bluetooth-central"
+        ]
       }
     },
     "android": {
@@ -45,10 +52,18 @@
         "@sfourdrinier/react-native-ble-plx",
         {
           "isBackgroundEnabled": true,
-          "modes": ["central"],
+          "modes": [
+            "central"
+          ],
           "bluetoothAlwaysPermission": "用于连接心率带、速度计和踏频传感器。"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "16273df0-db95-4b82-9a48-dbff3e3ebf64"
+      }
+    },
+    "owner": "lijianwithsbb"
   }
 }
